@@ -1,11 +1,16 @@
 from crewai import Agent, Crew, Process, Task
 from crewai.project import CrewBase, agent, crew, task
 from crewai.agents.agent_builder.base_agent import BaseAgent
-#create classes that are subcalsses of the basemodel
+
 from pydantic import BaseModel, Field
 from typing import List
 from crewai_tools import SerperDevTool
 from .tools.push_tool import PushNotificationTool
+
+import os
+from dotenv import load_dotenv
+
+load_dotenv()
 
 # structured outputs
 # custom tools (instead of surper)
@@ -80,4 +85,12 @@ class CrewaiStockPicker():
             process=Process.hierarchical,
             verbose=True,
             manager_agent=manager,
+            memory=True,
+            embedder={
+                "provider": "openai",
+                "config": {
+                    "model_name": "text-embedding-3-small",
+                    "api_key": os.getenv("OPENAI_API_KEY"),
+                },
+            },
         )
